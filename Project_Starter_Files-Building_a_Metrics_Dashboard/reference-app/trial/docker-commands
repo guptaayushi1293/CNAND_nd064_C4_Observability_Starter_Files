@@ -1,0 +1,2 @@
+docker build -t gupta1yushi/trial-app:latest .
+docker push gupta1yushi/trial-app:latest

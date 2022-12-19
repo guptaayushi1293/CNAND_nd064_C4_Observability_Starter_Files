@@ -1,0 +1,46 @@
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: trial-traces
+  namespace: observability
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trial-traces-query
+  namespace: observability
+spec:
+  ports:
+    - name: trial-traces-query
+      port: 16686
+      protocol: TCP
+      targetPort: 16686
+      nodePort: 30689
+  selector:
+    app: jaeger
+    app.kubernetes.io/component: all-in-one
+    app.kubernetes.io/instance: trial-traces
+    app.kubernetes.io/managed-by: jaeger-operator
+    app.kubernetes.io/name: trial-traces
+    app.kubernetes.io/part-of: jaeger
+  type: NodePort
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: trial-traces
+  namespace: monitoring
+  labels:
+    app: trial-traces
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: trial-traces
+  endpoints:
+  - port: trial-traces
+    path: /metrics
+    interval: 15s
+  namespaceSelector:
+    matchNames:
+    - default

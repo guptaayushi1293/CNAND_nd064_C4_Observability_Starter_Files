@@ -1,0 +1,2 @@
+docker build -t gupta1yushi/frontend-app:latest .
+docker push gupta1yushi/frontend-app:latest
